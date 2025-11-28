@@ -1,4 +1,4 @@
-const BASE_URL = "https://api.cureconnect.in/api";
+const BASE_URL = "https://e82ddf8f-1484-4284-a10d-c292b315292b.cfargotunnel.com/api";
 
 /**
  * Helper function to make API requests
