@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Doctor - CureConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/tailwind-config.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8F9FA; }
+    </style>
+</head>
+<body class="text-gray-800 antialiased min-h-screen pb-20">
+    <div class="max-w-2xl mx-auto p-5">
+        <div class="mb-6 mt-4">
+            <a href="dashboard.html" class="text-gray-500 hover:text-primary transition-colors inline-flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Dashboard
+            </a>
+            <h2 class="text-2xl font-bold text-primary mt-4">Select Your Doctor</h2>
+            <p class="text-gray-500">Choose a specialist for your consultation.</p>
+        </div>
+
+        <div id="doctorList" class="space-y-4">
+            <div class="text-center p-10">
+                <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary mx-auto"></div>
+                <p class="mt-4 text-gray-500">Loading doctors...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/appointment.js"></script>
+    <script>
+        if (!Auth.isLoggedIn()) window.location.href = 'login.html';
+
+        async function loadDoctors() {
+            const list = document.getElementById('doctorList');
+            try {
+                const doctors = await Appointment.getDoctors();
+                list.innerHTML = '';
+
+                if (doctors && doctors.length > 0) {
+                    doctors.forEach(doc => {
+                        const card = document.createElement('div');
+                        card.className = 'bg-white rounded-2xl shadow-sm p-5 border border-transparent hover:border-primary hover:-translate-y-1 transition-all cursor-pointer flex items-center gap-4';
+                        card.onclick = () => {
+                            window.location.href = `book.html?doctor_id=${doc.id}&doctor_name=${encodeURIComponent(doc.name)}`;
+                        };
+                        card.innerHTML = `
+                            <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center text-2xl text-primary shrink-0">
+                                👨‍⚕️
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-gray-900">${doc.name}</h4>
+                                <p class="text-gray-500">${doc.specialization || 'General Physician'}</p>
+                                ${doc.estimated_wait ? `<small class="text-green-600 font-medium block mt-1">Wait time: ~${doc.estimated_wait} mins</small>` : ''}
+                            </div>
+                        `;
+                        list.appendChild(card);
+                    });
+                } else {
+                    list.innerHTML = '<p class="text-center text-gray-400">No doctors available at the moment.</p>';
+                }
+            } catch (error) {
+                list.innerHTML = `<div class="bg-red-50 text-red-600 p-4 rounded-xl text-center">Failed to load doctors: ${error.message}</div>`;
+            }
+        }
+
+        loadDoctors();
+    </script>
+</body>
+</html>
