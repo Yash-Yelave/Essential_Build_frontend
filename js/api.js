@@ -1,4 +1,4 @@
-const BASE_URL = "https://e82ddf8f-1484-4284-a10d-c292b315292b.cfargotunnel.com/api";
+const BASE_URL = "https://5943024b-2bd9-4ad0-89ac-e36df9673fcc.cfargotunnel.com/api";
 
 /**
  * Helper function to make API requests
